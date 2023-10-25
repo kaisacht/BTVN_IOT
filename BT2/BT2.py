@@ -49,6 +49,14 @@ def run_publish():
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        data = json.loads(msg.payload.decode())
+        print('')
+        print('id           :', data['id'])
+        print('packet_no    :', data['packet_no'])
+        print('temperature  :', data['temperature'])
+        print('humidity     :', data['humidity'])
+        print('tds          :', data['tds'])
+        print('pH           :', data['pH'])
     client.subscribe(topic)
     client.on_message = on_message
 
