@@ -1,28 +1,33 @@
-import pika
 import json
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost'))
-channel = connection.channel()
+import pika, sys, os
 
-channel.exchange_declare(exchange='logs', exchange_type='fanout')
+def main():
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
 
-result = channel.queue_declare(queue='', exclusive=True)
-queue_name = result.method.queue
+    channel.queue_declare(queue='hello')
 
-channel.queue_bind(exchange='logs', queue=queue_name)
+    def callback(ch, method, properties, body):
+        data = json.loads( body)
+        print('')
+        print('id           :', data['id'])
+        print('packet_no    :', data['packet_no'])
+        print('temperature  :', data['temperature'])
+        print('humidity     :', data['humidity'])
+        print('tds          :', data['tds'])
+        print('pH           :', data['pH'])
 
-print(' [*] Waiting for logs. To exit press CTRL+C')
+    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
 
-def callback(ch, method, properties, body):
-    data = json.loads( body)
-    print('')
-    print('id           :', data['id'])
-    print('packet_no    :', data['packet_no'])
-    print('temperature  :', data['temperature'])
-    print('humidity     :', data['humidity'])
-    print('tds          :', data['tds'])
-    print('pH           :', data['pH'])
-channel.basic_consume(
-    queue=queue_name, on_message_callback=callback, auto_ack=True)
+    print(' [*] Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
 
-channel.start_consuming()
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Interrupted')
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)

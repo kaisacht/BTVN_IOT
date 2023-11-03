@@ -1,11 +1,9 @@
 import pika
-import sys
 import json
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
-
 data = {
     "id": 12,
     "packet_no": 126,
@@ -15,10 +13,11 @@ data = {
     "pH": 5.0
 }
 
-json_data = json.dumps( data)
-channel.exchange_declare(exchange='logs', exchange_type='fanout')
+json_data = json.dumps(data)
+channel.queue_declare(queue='hello')
 message = json_data
-channel.basic_publish(exchange='logs', routing_key='', body=message)
+channel.basic_publish(exchange='', routing_key='hello', body=message)
+
 data = json.loads( message)
 
 print('')
