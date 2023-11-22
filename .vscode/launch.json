@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/HUST/20231/Iot/Code/TestESP32",
-      "program": "c:/HUST/20231/Iot/Code/TestESP32/build/Debug/outDebug",
+      "cwd": "c:/HUST/20231/Iot/Code",
+      "program": "c:/HUST/20231/Iot/Code/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
